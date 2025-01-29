@@ -51,7 +51,7 @@ def transmittance_loss_dust(dust_density):
             11.19 * dust_density - 2.25)/100
 
 def wind_rand(mean_wind_speed, std_dev_wind_speed):
-    return np.random.normal(mean_wind_speed, std_dev_wind_speed)
+    return np.random.gamma(mean_wind_speed, std_dev_wind_speed)
 
 # create a randomized list of 365 booleans from poisson distribution for rainy days
 def rain_list(rain_rate):
@@ -77,7 +77,7 @@ def generate_one_set(rain_rate,actual_power):
         dust_val = dust_rand(geometric_mean_dust, geometric_std_dev_dust)
 
         if days == True:
-            total_dust = total_dust * 0.8
+            total_dust = total_dust * 0.2
             days_row = 0
         elif days == False and days_row > 0:
             total_dust = dust_accum_density_perday(dust_val,days_row)
