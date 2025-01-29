@@ -18,10 +18,10 @@ def average(a,b,c):
     c = c * 1000 / 3600
     return (a+b+c)/3
 average = (average(stavely[0],brooks1[0],brooks2[0]),average(stavely[1],brooks1[1],brooks2[1]))
-
+print(average)
 # Equations
 def power_transmittance(actual_power,transmittance):
-    return actual_power * (1 - transmittance)
+    return actual_power * (1 + transmittance)
 
 def dust_accum_density_perday(particle_size, ND): #deposition velocity 0.20 cm/s and 0.40 cm/s for the PM2.5 and PM2.5-10 
     
@@ -45,7 +45,7 @@ def transmittance_gain_windspeed(WS):
     return WS*0.005
 
 def transmittance_loss_dust(dust_density):
-    return (-0.001335 * dust_density**6 + 0.04398 * dust_density**5 - 0.5427 * dust_density**4 + 3.05 * dust_density**3 - 7.703 * dust_density**2 + 11.19 * dust_density - 2.25)/100
+    return (-0.001335 * dust_density**6 + 0.04398 * dust_density**5 - 0.5427 * dust_density**4 + 3.05 * dust_density**3 - 7.703 * dust_density**2 + 11.19 * dust_density - 2.25)
 
 def wind_rand(mean_wind_speed, std_dev_wind_speed):
     return np.random.normal(mean_wind_speed, std_dev_wind_speed)
@@ -71,13 +71,15 @@ def generate_one_set(rain_rate,actual_power):
         #store data for each day
         loss = transmittance_loss_dust(total_dust)
         gain = transmittance_gain_windspeed(wind_today)
-        transmittance_today = gain-loss
+        transmittance_today = loss-gain
         power_perday.append(power_transmittance(actual_power,transmittance_today))
         # generate dust value for the day
         dust_val = dust_rand(geometric_mean_dust, geometric_std_dev_dust)
 
+        print(loss,gain)
+
         if days == True:
-            total_dust = 0 
+            total_dust = 0
             days_row = 0
         elif days == False and days_row > 0:
             total_dust = dust_accum_density_perday(dust_val,days_row)
@@ -89,11 +91,11 @@ def generate_one_set(rain_rate,actual_power):
 
 def write_one_set(power_perday,rain,wind_perday):
     # write the three datasets in a way where 10,000 more sets can be added and reseparated
-    with open('data.txt', 'a') as f:
+    with open('dataone.txt', 'w') as f:
         for i in range(365):
             f.write(f'{power_perday[i]},{rain[i]},{wind_perday[i]}\n')
         f.write('--NEWYEAR--\n')
 
-for i in tqdm(range(10000)):
+for i in tqdm(range(1)):
     power_perday,rain,wind_perday = generate_one_set(0.2,465)
-    write_one_set(power_perday,rain,wind_perday)
+    #write_one_set(power_perday,rain,wind_perday)

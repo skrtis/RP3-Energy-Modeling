@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.graph_objects as go
+from mpl_toolkits.mplot3d import Axes3D
 
 def data_unpacker():
     power_total= []
@@ -9,7 +11,7 @@ def data_unpacker():
     power_temporary = []
     rain_count = 0
     wind_temporary = []
-    with open('data.txt') as f:
+    with open('dataone.txt') as f:
         for line in f:
             if line.strip() == "--NEWYEAR--":
                 power_total.append(power_temporary) 
@@ -70,6 +72,3 @@ plt.xlabel('Wind Speed')
 plt.ylabel('Rain Days')
 plt.title('Average Power Output by Wind Speed and Rain Days')
 plt.show()
-
-
-
