@@ -1,8 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import plotly.graph_objects as go
-from mpl_toolkits.mplot3d import Axes3D
 
 def data_unpacker():
     power_total= []
@@ -31,8 +29,22 @@ def data_unpacker():
 
 powers, rains, winds  = data_unpacker()
 
-# Calculate power averages
+# Calculate daily average power across all years
+daily_average_power = np.mean(powers, axis=0)
 
+# Plot each array in powers as a single line
+plt.figure(figsize=(12, 8))
+for power in powers:
+    plt.plot(power)
+# Plot the daily average power
+plt.plot(daily_average_power, 'k--', label='Daily Average Power')
+plt.xlabel('Day of the Year')
+plt.ylabel('Power Output')
+plt.title('Power Output Over the Year for Each Year')
+plt.legend()
+plt.show()
+
+# Calculate list power averages, of each list in power
 power_average = [sum(power)/len(power) for power in powers]
 
 # Create bins
@@ -64,11 +76,11 @@ plt.figure(figsize=(12, 10))
 sns.heatmap(power_matrix.T, 
             xticklabels=np.round(wind_edges[:-1], 1),
             yticklabels=np.round(rain_edges[:-1], 1),
-            cmap='viridis',
-            robust=True,
+            cmap='Purples',
             vmin=power_min,
             vmax=power_max)
 plt.xlabel('Wind Speed')
 plt.ylabel('Rain Days')
 plt.title('Average Power Output by Wind Speed and Rain Days')
 plt.show()
+
