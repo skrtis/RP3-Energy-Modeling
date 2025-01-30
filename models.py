@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 
 # Variables and Constants
-geometric_mean_dust = 3.4 #
+geometric_mean_dust = 3.4 #averaged from study
 geometric_std_dev_dust = 4.7
 
 stavely = (90,2.2)
@@ -51,7 +51,10 @@ def transmittance_loss_dust(dust_density):
             11.19 * dust_density - 2.25)/100
 
 def wind_rand(mean_wind_speed, std_dev_wind_speed):
-    return np.random.gamma(mean_wind_speed, std_dev_wind_speed)
+    #turn mean_wind_speed and std_dev_wind_speed into gamma shape and scale
+    shape = mean_wind_speed**2/std_dev_wind_speed**2
+    scale = std_dev_wind_speed**2/mean_wind_speed
+    return np.random.gamma(shape,scale)
 
 # create a randomized list of 365 booleans from poisson distribution for rainy days
 def rain_list(rain_rate):
@@ -70,14 +73,14 @@ def generate_one_set(rain_rate,actual_power):
     # the main for loop which the power output will be calculated from
     for days in rain:
         #provide values for the first day:
-        wind_today = wind_rand(average[0],5)
+        wind_today = wind_rand(average[0],average[1])
         wind_perday.append(wind_today)
 
         # generate dust value for the day
         dust_val = dust_rand(geometric_mean_dust, geometric_std_dev_dust)
 
         if days == True:
-            total_dust = total_dust * 0.2
+            total_dust = total_dust * 0.2 # a rain eliminates 80% of total dust
             days_row = 0
         elif days == False and days_row > 0:
             total_dust = dust_accum_density_perday(dust_val,days_row)
@@ -97,11 +100,11 @@ def generate_one_set(rain_rate,actual_power):
 
 def write_one_set(power_perday,rain,wind_perday):
     # write the three datasets in a way where 10,000 more sets can be added and reseparated
-    with open('dataone.txt', 'a') as f:
+    with open('dataone.txt','a') as f:
         for i in range(365):
             f.write(f'{power_perday[i]},{rain[i]},{wind_perday[i]}\n')
         f.write('--NEWYEAR--\n')
 
-for i in tqdm(range(10000)):
+for i in tqdm(range(10)):
     power_perday,rain,wind_perday = generate_one_set(0.2,465)
     write_one_set(power_perday,rain,wind_perday)

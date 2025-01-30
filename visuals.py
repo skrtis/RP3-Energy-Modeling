@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from tqdm import tqdm
 
 def data_unpacker():
     power_total= []
@@ -34,7 +35,7 @@ daily_average_power = np.mean(powers, axis=0)
 
 # Plot each array in powers as a single line
 plt.figure(figsize=(12, 8))
-for power in powers:
+for power in tqdm(powers):
     plt.plot(power)
 # Plot the daily average power
 plt.plot(daily_average_power, 'k--', label='Daily Average Power')
