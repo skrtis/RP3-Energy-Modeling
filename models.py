@@ -39,8 +39,10 @@ def dust_accum_density_perday(particle_size, ND): #deposition velocity 0.20 cm/s
     return deposition_velocity*total_suspended_particles*(10**-6)*ND*86400
 
 # Log-normal distribution with geometric mean
-def dust_rand(geometric_mean, geometric_std):
-    return np.random.lognormal(geometric_mean, geometric_std)
+def dust_rand(mean, geometric_std):
+    normal_std = np.log(geometric_std)
+    mu = np.log(mean) - normal_std**2/2
+    return np.random.lognormal(mu, normal_std)
 
 def transmittance_gain_windspeed(WS):
     return WS*0.005/100
@@ -105,6 +107,6 @@ def write_one_set(power_perday,rain,wind_perday):
             f.write(f'{power_perday[i]},{rain[i]},{wind_perday[i]}\n')
         f.write('--NEWYEAR--\n')
 
-for i in tqdm(range(10)):
+for i in tqdm(range(1000)):
     power_perday,rain,wind_perday = generate_one_set(0.2,465)
     write_one_set(power_perday,rain,wind_perday)
