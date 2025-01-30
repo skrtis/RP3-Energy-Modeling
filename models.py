@@ -40,9 +40,8 @@ def dust_accum_density_perday(particle_size, ND): #deposition velocity 0.20 cm/s
 
 # Log-normal distribution with geometric mean
 def dust_rand(mean, geometric_std):
-    normal_std = np.log(geometric_std)
-    mu = np.log(mean) - normal_std**2/2
-    return np.random.lognormal(mu, normal_std)
+    normal_std = np.log(geometric_std) 
+    return np.random.lognormal(mean, normal_std)
 
 def transmittance_gain_windspeed(WS):
     return WS*0.005/100
